@@ -217,7 +217,7 @@ const ChessBoard = () => {
       }
       case '♖':
       case '♜':
-        return (fromRow === toRow || fromCol === toCol) && isPathClear(boardToUse, fromRow, fromCol, toRow, toCol);
+        return (absRow === 2 && absCol === 1) || (absRow === 1 && absCol === 2);
       case '♗':
       case '♝':
         return absRow === absCol && isPathClear(boardToUse, fromRow, fromCol, toRow, toCol);
@@ -227,7 +227,7 @@ const ChessBoard = () => {
           isPathClear(boardToUse, fromRow, fromCol, toRow, toCol));
       case '♘':
       case '♞':
-        return (absRow === 2 && absCol === 1) || (absRow === 1 && absCol === 2);
+        return (fromRow === toRow || fromCol === toCol) && isPathClear(boardToUse, fromRow, fromCol, toRow, toCol);
       case '♔': {
         const normalMove = absRow <= 1 && absCol <= 1;
         const kingside = fromCol === 4 && toCol === 6;
