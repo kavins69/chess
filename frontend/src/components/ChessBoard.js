@@ -41,6 +41,36 @@ const ChessBoard = () => {
   const [checkStatus, setCheckStatus] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
   const [promotion, setPromotion] = useState(null);
+  const [touchPosition, setTouchPosition] = useState(null);
+
+    const handleTouchStart = (e, row, col) => {
+    handleDragStart(row, col);
+    const touch = e.touches[0];
+    setTouchPosition({ x: touch.clientX, y: touch.clientY });
+    };
+
+    const handleTouchMove = (e) => {
+    e.preventDefault();
+    };
+
+    const handleTouchEnd = (e) => {
+    if (!touchPosition) return;
+
+    const touch = e.changedTouches[0];
+    const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    if (!targetElement) return;
+
+    const cell = targetElement.closest('[data-row][data-col]');
+    if (cell) {
+        const row = parseInt(cell.getAttribute('data-row'));
+        const col = parseInt(cell.getAttribute('data-col'));
+        handleDrop(row, col);
+    }
+
+    setTouchPosition(null);
+    };
+
   
   const handleDragStart = (row, col) => {
     const piece = board[row][col];
@@ -453,22 +483,27 @@ const ChessBoard = () => {
 
           return (
             <div
-              key={`${row}-${col}`}
-              className={`relative aspect-square ${isDark ? 'bg-dark' : 'bg-light'} border border-gray-300 flex items-center justify-center`}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => handleDrop(row, col)}
-            >
+                key={`${row}-${col}`}
+                data-row={row}
+                data-col={col}
+                className={`relative aspect-square ${isDark ? 'bg-dark' : 'bg-light'} border border-gray-300 flex items-center justify-center`}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(row, col)}
+                >
             {isHighlighted && (
                 <div className="absolute w-3 h-3 rounded-full bg-yellow-400 opacity-80 z-10" />
               )}              
               {piece && pieces[piece] && (
                 <img
-                  src={pieces[piece]}
-                  alt={piece}
-                  draggable
-                  onDragStart={() => handleDragStart(row, col)}
-                  className="w-15 h-15 select-none"
-                />
+                    src={pieces[piece]}
+                    alt={piece}
+                    draggable
+                    onDragStart={(e) => handleDragStart(row, col)}
+                    onTouchStart={(e) => handleTouchStart(e, row, col)}
+                    onTouchMove={(e) => handleTouchMove(e)}
+                    onTouchEnd={(e) => handleTouchEnd(e)}
+                    className="w-15 h-15 select-none touch-none"
+                    />
               )}
 
               {promotion && (
