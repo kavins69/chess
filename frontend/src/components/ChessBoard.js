@@ -41,7 +41,7 @@ const ChessBoard = () => {
   const [checkStatus, setCheckStatus] = useState(null);
   const [validMoves, setValidMoves] = useState([]);
   const [promotion, setPromotion] = useState(null);
-
+  
   const handleDragStart = (row, col) => {
     const piece = board[row][col];
     setDraggedPiece(piece);
